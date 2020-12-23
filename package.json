@@ -1,0 +1,28 @@
+{
+  "name": "launch-school-javascript-101",
+  "version": "1.0.0",
+  "description": "Exercises from Launch School JS101: Programming Foundations with JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JDGuillaume/launch-school-javascript-101.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JDGuillaume/launch-school-javascript-101/issues"
+  },
+  "homepage": "https://github.com/JDGuillaume/launch-school-javascript-101#readme",
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.16.0",
+    "eslint-cli": "^1.1.1"
+  }
+}
