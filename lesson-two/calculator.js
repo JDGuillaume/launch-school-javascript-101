@@ -1,5 +1,8 @@
-// Attach the readline library to the readline variable for ease of use.
+// Import the readline library and attach it to the readline variable.
 const readline = require('readline-sync');
+
+// Import our configuration file and attach it to the message variable.
+const message = require('./calculator-config.json');
 
 // Create a reusable function that prepends log statements with the => marker.
 function prompt(message) {
@@ -12,45 +15,42 @@ function invalidNumber(number) {
 }
 
 // Welcome the user to the program.
-prompt('Welcome to Calculator!');
+prompt(message.welcome);
 
 // Boolean flag for enabling multiple operations.
 let continueOperations = true;
 
 while (continueOperations) {
   // Ask the user for the first number and validate their input.
-  prompt("What's the first number?");
+  prompt(message.firstNumber);
   let firstNumber = readline.question();
 
   while (invalidNumber(firstNumber)) {
-    prompt("Hmm... that doesn't look like a valid number.");
+    prompt(message.invalidNumber);
     firstNumber = readline.question();
   }
 
   // Ask the user for the second number and validate their input.
-  prompt("What's the second number?");
+  prompt(message.secondNumber);
   let secondNumber = readline.question();
 
   while (invalidNumber(secondNumber)) {
-    prompt("Hmm... that doesn't look like a valid number.");
+    prompt(message.invalidNumber);
     secondNumber = readline.question();
   }
 
   // Ask the user for an operation to perform and validate their input.
-  prompt(
-    'What operation would you like to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide'
-  );
+  prompt(message.operations);
 
   let operation = readline.question();
 
   while (!['1', '2', '3', '4'].includes(operation)) {
-    prompt('Must choose 1, 2, 3 or 4');
+    prompt(message.invalidOperation);
     operation = readline.question();
   }
 
   // Perform the operation on the two numbers.
   let output;
-
   switch (operation) {
     case '1':
       output = Number(firstNumber) + Number(secondNumber);
@@ -67,10 +67,10 @@ while (continueOperations) {
   }
 
   // Print the result to the terminal.
-  prompt(`The result is: ${output}`);
+  prompt(message.result + `${output}.`);
 
   // Determine if the user would to like to perform another operation.
-  prompt('Would you like to perform another operation? (y/n)');
+  prompt(message.anotherOperation);
   let operationChoice = readline.question('');
 
   if (operationChoice[0].toLowerCase() === 'y') {
