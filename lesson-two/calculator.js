@@ -2,50 +2,77 @@
 const readline = require('readline-sync');
 
 // Import our configuration file and attach it to the message variable.
-const message = require('./calculator-config.json');
+const MESSAGES = require('./calculator-config.json');
 
 // Create a reusable function that prepends log statements with the => marker.
 function prompt(message) {
   console.log(`=> ${message}`);
 }
 
-// Create a function to determine whether the users input is valid.
+// Create a function to determine whether the user's number input is valid.
 function invalidNumber(number) {
   return number.trimStart() === '' || Number.isNaN(Number(number));
 }
 
+// Create a function to determine whether the user's language choice is valid.
+function invalidLanguage(choice) {
+  return !(choice === '1' || choice === '2');
+}
+
+prompt(MESSAGES.Language);
+let language = readline.question('');
+
+while (invalidLanguage(language)) {
+  prompt(MESSAGES.Language);
+  language = readline.question('');
+}
+
+// Convert language variable to correct language
+switch (language) {
+  case '1':
+    language = 'English';
+    break;
+  case '2':
+    language = 'Spanish';
+    break;
+}
+
+function messages(message, language = 'English') {
+  return MESSAGES[language][message];
+}
+
 // Welcome the user to the program.
-prompt(message.welcome);
+prompt(messages('welcome', language));
 
 // Boolean flag for enabling multiple operations.
 let continueOperations = true;
 
 while (continueOperations) {
   // Ask the user for the first number and validate their input.
-  prompt(message.firstNumber);
+  prompt(messages('firstNumber', language));
   let firstNumber = readline.question();
 
   while (invalidNumber(firstNumber)) {
-    prompt(message.invalidNumber);
+    prompt(messages('invalidNumber', language));
     firstNumber = readline.question();
   }
 
   // Ask the user for the second number and validate their input.
-  prompt(message.secondNumber);
+  prompt(messages('secondNumber', language));
   let secondNumber = readline.question();
 
   while (invalidNumber(secondNumber)) {
-    prompt(message.invalidNumber);
+    prompt(messages('invalidNumber', language));
     secondNumber = readline.question();
   }
 
   // Ask the user for an operation to perform and validate their input.
-  prompt(message.operations);
+  prompt(messages('operations', language));
 
   let operation = readline.question();
 
   while (!['1', '2', '3', '4'].includes(operation)) {
-    prompt(message.invalidOperation);
+    prompt(messages('invalidOperation', language));
     operation = readline.question();
   }
 
@@ -67,13 +94,17 @@ while (continueOperations) {
   }
 
   // Print the result to the terminal.
-  prompt(message.result + `${output}.`);
+  prompt(messages('result', language) + `${output}.`);
 
   // Determine if the user would to like to perform another operation.
-  prompt(message.anotherOperation);
+  prompt(messages('anotherOperation', language));
   let operationChoice = readline.question('');
 
-  if (operationChoice[0].toLowerCase() === 'y') {
+  // Included s for 'Si' in Spanish.
+  if (
+    operationChoice[0].toLowerCase() === 'y' ||
+    operationChoice[0].toLowerCase() === 's'
+  ) {
     continueOperations = true;
   } else {
     continueOperations = false;
