@@ -1,5 +1,5 @@
 const readline = require('readline-sync');
-const VALID_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
+
 const WIN_CONDITIONS = {
   rock: ['scissors', 'lizard'],
   paper: ['rock', 'spock'],
@@ -7,8 +7,22 @@ const WIN_CONDITIONS = {
   lizard: ['spock', 'paper'],
   spock: ['scissors', 'rock'],
 };
+const VALID_CHOICES = Object.keys(WIN_CONDITIONS);
 
 let continuePlaying = true;
+
+const abbreviatedChoices = {};
+
+function shortenChoices(VALID_CHOICES) {
+  VALID_CHOICES.forEach(choice => {
+    if (abbreviatedChoices[choice[0]] === undefined) {
+      abbreviatedChoices[choice[0]] = choice;
+    } else {
+      abbreviatedChoices[choice[0].toUpperCase()] = choice;
+    }
+  });
+}
+shortenChoices(VALID_CHOICES);
 
 function prompt(message) {
   console.log(`=> ${message}`);
@@ -43,13 +57,19 @@ function displayWinner(winner) {
 }
 
 while (continuePlaying) {
-  prompt(`Choose one: ${VALID_CHOICES.join(', ')}`);
-  let choice = readline.question();
+  prompt(
+    `Choose one: ${Object.entries(abbreviatedChoices)
+      .join(' | ')
+      .replaceAll(',', '-')}`
+  );
+  let abbreviatedChoice = readline.question();
 
-  while (!VALID_CHOICES.includes(choice)) {
+  while (!abbreviatedChoices[abbreviatedChoice]) {
     prompt("That's not a valid choice.");
-    choice = readline.question();
+    abbreviatedChoice = readline.question();
   }
+
+  let choice = abbreviatedChoices[abbreviatedChoice];
 
   let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
   let computerChoice = VALID_CHOICES[randomIndex];
