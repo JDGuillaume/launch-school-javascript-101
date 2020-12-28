@@ -8,6 +8,7 @@ const WIN_CONDITIONS = {
   spock: ['scissors', 'rock'],
 };
 const VALID_CHOICES = Object.keys(WIN_CONDITIONS);
+const GAMES_TO_WIN = 5;
 
 const abbreviatedChoices = {};
 
@@ -29,7 +30,28 @@ function prompt(message) {
   console.log(`=> ${message}`);
 }
 
-function displayChoices(choice, computerChoice) {
+function welcomePlayer() {
+  prompt(
+    `Welcome to ${VALID_CHOICES.map(
+      item => item[0].toUpperCase() + item.slice(1)
+    ).join(', ')}! We're playing best of ${GAMES_TO_WIN}!`
+  );
+}
+
+function displayChoices(abbreviatedChoices) {
+  prompt(
+    `Choose one: ${Object.entries(abbreviatedChoices)
+      .join(' | ')
+      .replaceAll(',', '-')}`
+  );
+}
+
+function setComputerChoice() {
+  let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
+  return VALID_CHOICES[randomIndex];
+}
+
+function displaySelected(choice, computerChoice) {
   console.log('');
   prompt(`You chose ${choice}, computer chose ${computerChoice}.`);
 }
@@ -70,36 +92,59 @@ function updateWinCount(winner) {
 }
 
 function displayOverallWinner(playerWinCount) {
-  if (playerWinCount === 5) {
-    prompt('You won best of 5!');
+  if (playerWinCount === GAMES_TO_WIN) {
+    prompt(`You won best of ${GAMES_TO_WIN}!`);
   } else {
-    prompt('The computer won best of 5!');
+    prompt(`The computer won best of ${GAMES_TO_WIN}!`);
   }
 }
 
-while (playerWinCount !== 5 && computerWinCount !== 5) {
-  prompt(
-    `Choose one: ${Object.entries(abbreviatedChoices)
-      .join(' | ')
-      .replaceAll(',', '-')}`
-  );
-  let abbreviatedChoice = readline.question();
-
-  while (!abbreviatedChoices[abbreviatedChoice]) {
-    prompt("That's not a valid choice.");
-    abbreviatedChoice = readline.question();
-  }
-
-  let choice = abbreviatedChoices[abbreviatedChoice];
-
-  let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
-  let computerChoice = VALID_CHOICES[randomIndex];
-
-  displayChoices(choice, computerChoice);
-  let winner = findWinner(choice, computerChoice);
-  displayWinner(winner);
-  updateWinCount(winner);
-  console.log(`Player: ${playerWinCount}, Computer: ${computerWinCount}\n`);
+function clearScore() {
+  playerWinCount = 0;
+  computerWinCount = 0;
 }
 
-displayOverallWinner(playerWinCount);
+function playAgain() {
+  prompt(`Would you like to play again? (y/n)`);
+  let continuePlaying = readline.question();
+
+  while (continuePlaying[0] !== 'n' && continuePlaying[0] !== 'y') {
+    prompt('Please enter "y" or "n".');
+    continuePlaying = readline.question().toLowerCase();
+  }
+
+  if (continuePlaying === 'y') {
+    clearScore();
+    playGame();
+  }
+}
+
+function playGame() {
+  while (playerWinCount !== GAMES_TO_WIN && computerWinCount !== GAMES_TO_WIN) {
+    displayChoices(abbreviatedChoices);
+    let abbreviatedChoice = readline.question();
+
+    while (!abbreviatedChoices[abbreviatedChoice]) {
+      prompt("That's not a valid choice.");
+      abbreviatedChoice = readline.question();
+    }
+
+    let choice = abbreviatedChoices[abbreviatedChoice];
+
+    let computerChoice = setComputerChoice();
+
+    displaySelected(choice, computerChoice);
+
+    let winner = findWinner(choice, computerChoice);
+
+    displayWinner(winner);
+    updateWinCount(winner);
+    console.log(`Player: ${playerWinCount}, Computer: ${computerWinCount}\n`);
+  }
+
+  displayOverallWinner(playerWinCount);
+  playAgain();
+}
+
+welcomePlayer();
+playGame();
