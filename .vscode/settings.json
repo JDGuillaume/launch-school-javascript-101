@@ -1,5 +1,9 @@
 {
-  "cSpell.words": [
-    "Munsters"
-  ]
+  "cSpell.words": ["Munsters"],
+  "workbench.colorCustomizations": {
+    "titleBar.activeForeground": "#FFF",
+    "titleBar.inactiveForeground": "#ffffff",
+    "titleBar.activeBackground": "#f25858",
+    "titleBar.inactiveBackground": "#f25858"
+  }
 }
