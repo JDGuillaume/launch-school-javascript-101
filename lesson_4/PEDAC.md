@@ -37,7 +37,7 @@ Given a string, produce a new string with every other word removed.
 
 ## D: Data Structures
 
-- Help to reason witt data logically.
+- Help to reason with data logically.
 - Help us to interact with data at an implementation level.
 - Thinking in terms of data structures is part of the problem solving process.
 - Data Structures are closely linked to algorithms.
