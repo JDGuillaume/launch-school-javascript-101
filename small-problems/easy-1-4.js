@@ -7,9 +7,9 @@
 // The program will return a string, containing the product of the two numbers
 //  - The initial answer will be in square meters.
 //  - The string will include the area in square feet in parentheses.
-//    - Conversion: 1 square meter == 10.7639 squre feet.
+//    - Conversion: 1 square meter == 10.7639 square feet.
 //  Implicit:
-//   - Measuremets will be reported as floating point numbers fixed to 2 places.
+//   - Measurements will be reported as floating point numbers fixed to 2 places
 // Assumptions: The input will be a valid integer.
 // External Code: readline-sync
 
