@@ -32,11 +32,8 @@
 // Map each value to its corresponding value in the object.
 // (For Loop)
 // Initialize the count to 0
-// Initialize a second variable to the length of the array. (Exponent)
-// On each iteration value = array[count] * 10 ** Exponent - 1
-// After each iteration:
-//  - Increment count by 1.
-//  - Decrement count by 1.
+// On each iteration, add the value to the value * 10 + array [ count ]
+// After each iteration, increment count by 1.
 // Return value.
 
 // Code
