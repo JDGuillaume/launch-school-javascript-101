@@ -7,6 +7,7 @@
 // - Compute the following operations using each number as an operand
 //   - +, -, *, /, %, **
 // - For each operation, the function should return a new line.
+// Implicit: The answer for division should be rounded.
 
 // External Code: readline-sync
 
