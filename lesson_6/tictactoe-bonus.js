@@ -6,6 +6,16 @@ const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
 const GAMES_TO_WIN = 5;
+const winningLines = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9], // rows
+  [1, 4, 7],
+  [2, 5, 8],
+  [3, 6, 9], // columns
+  [1, 5, 9],
+  [3, 5, 7], // diagonals
+];
 
 function prompt(message) {
   return console.log(`=> ${message}`);
@@ -67,6 +77,34 @@ function emptySquares(board) {
   return Object.keys(board).filter(key => board[key] === INITIAL_MARKER);
 }
 
+function detectThreat(board) {
+  for (let line = 0; line < winningLines.length; line++) {
+    let [sq1, sq2, sq3] = winningLines[line];
+
+    if (
+      board[sq1] === INITIAL_MARKER &&
+      board[sq2] === HUMAN_MARKER &&
+      board[sq3] === HUMAN_MARKER
+    ) {
+      return sq1;
+    } else if (
+      board[sq1] === HUMAN_MARKER &&
+      board[sq2] === INITIAL_MARKER &&
+      board[sq3] === HUMAN_MARKER
+    ) {
+      return sq2;
+    } else if (
+      board[sq1] === HUMAN_MARKER &&
+      board[sq2] === HUMAN_MARKER &&
+      board[sq3] === INITIAL_MARKER
+    ) {
+      return sq3;
+    }
+  }
+
+  return null;
+}
+
 function playerChoosesSquare(board) {
   let square;
 
@@ -83,10 +121,16 @@ function playerChoosesSquare(board) {
 }
 
 function computerChoosesSquare(board) {
-  let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
+  let detectedThreat = detectThreat(board);
 
-  let square = emptySquares(board)[randomIndex];
-  board[square] = COMPUTER_MARKER;
+  if (detectedThreat) {
+    board[detectedThreat] = COMPUTER_MARKER;
+  } else {
+    let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
+
+    let square = emptySquares(board)[randomIndex];
+    board[square] = COMPUTER_MARKER;
+  }
 }
 
 function boardFull(board) {
@@ -94,17 +138,6 @@ function boardFull(board) {
 }
 
 function detectWinner(board) {
-  let winningLines = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9], // rows
-    [1, 4, 7],
-    [2, 5, 8],
-    [3, 6, 9], // columns
-    [1, 5, 9],
-    [3, 5, 7], // diagonals
-  ];
-
   for (let line = 0; line < winningLines.length; line++) {
     let [sq1, sq2, sq3] = winningLines[line];
 
