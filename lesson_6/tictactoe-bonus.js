@@ -1,3 +1,4 @@
+/* eslint-disable max-depth */
 /* eslint-disable max-statements */
 /* eslint-disable max-lines-per-function */
 const readline = require('readline-sync');
@@ -19,6 +20,19 @@ const winningLines = [
 
 function prompt(message) {
   return console.log(`=> ${message}`);
+}
+
+function chooseFirstMove() {
+  let choice;
+
+  while (true) {
+    prompt(`Who should go first? (player/computer)`);
+    choice = readline.question('').toLowerCase();
+
+    if (choice === 'player' || choice === 'computer') break;
+  }
+
+  return choice;
 }
 
 function joinOr(array = [], delimiter = ', ', conjunction = 'or') {
@@ -197,17 +211,29 @@ while (true) {
   let playerWins = 0;
   let computerWins = 0;
 
+  let first = chooseFirstMove();
+
   while (playerWins !== 5 && computerWins !== 5) {
     let board = initializeBoard();
 
     while (true) {
-      displayBoard(board, playerWins, computerWins);
+      if (first === 'player') {
+        displayBoard(board, playerWins, computerWins);
 
-      playerChoosesSquare(board);
-      if (someoneWon(board) || boardFull(board)) break;
+        playerChoosesSquare(board);
+        if (someoneWon(board) || boardFull(board)) break;
 
-      computerChoosesSquare(board);
-      if (someoneWon(board) || boardFull(board)) break;
+        computerChoosesSquare(board);
+        if (someoneWon(board) || boardFull(board)) break;
+      } else {
+        computerChoosesSquare(board);
+        if (someoneWon(board) || boardFull(board)) break;
+
+        displayBoard(board, playerWins, computerWins);
+
+        playerChoosesSquare(board);
+        if (someoneWon(board) || boardFull(board)) break;
+      }
     }
 
     displayBoard(board);
