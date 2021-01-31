@@ -77,6 +77,34 @@ function emptySquares(board) {
   return Object.keys(board).filter(key => board[key] === INITIAL_MARKER);
 }
 
+function detectWinningMove(board) {
+  for (let line = 0; line < winningLines.length; line++) {
+    let [sq1, sq2, sq3] = winningLines[line];
+
+    if (
+      board[sq1] === INITIAL_MARKER &&
+      board[sq2] === COMPUTER_MARKER &&
+      board[sq3] === COMPUTER_MARKER
+    ) {
+      return sq1;
+    } else if (
+      board[sq1] === COMPUTER_MARKER &&
+      board[sq2] === INITIAL_MARKER &&
+      board[sq3] === COMPUTER_MARKER
+    ) {
+      return sq2;
+    } else if (
+      board[sq1] === COMPUTER_MARKER &&
+      board[sq2] === COMPUTER_MARKER &&
+      board[sq3] === INITIAL_MARKER
+    ) {
+      return sq3;
+    }
+  }
+
+  return null;
+}
+
 function detectThreat(board) {
   for (let line = 0; line < winningLines.length; line++) {
     let [sq1, sq2, sq3] = winningLines[line];
@@ -121,14 +149,16 @@ function playerChoosesSquare(board) {
 }
 
 function computerChoosesSquare(board) {
-  let detectedThreat = detectThreat(board);
-
-  if (detectedThreat) {
-    board[detectedThreat] = COMPUTER_MARKER;
+  if (detectWinningMove(board)) {
+    board[detectWinningMove(board)] = COMPUTER_MARKER;
+  } else if (detectThreat(board)) {
+    board[detectThreat(board)] = COMPUTER_MARKER;
+  } else if (emptySquares(board).includes(5)) {
+    board[5] = COMPUTER_MARKER;
   } else {
     let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
-
     let square = emptySquares(board)[randomIndex];
+
     board[square] = COMPUTER_MARKER;
   }
 }
