@@ -177,6 +177,18 @@ function computerChoosesSquare(board) {
   }
 }
 
+function chooseSquare(board, currentPlayer) {
+  if (currentPlayer === 'player') {
+    playerChoosesSquare(board);
+  } else {
+    computerChoosesSquare(board);
+  }
+}
+
+function alternatePlayer(currentPlayer) {
+  return currentPlayer === 'player' ? 'computer' : 'player';
+}
+
 function boardFull(board) {
   return emptySquares(board).length === 0;
 }
@@ -211,29 +223,17 @@ while (true) {
   let playerWins = 0;
   let computerWins = 0;
 
-  let first = chooseFirstMove();
+  let firstPlayer = chooseFirstMove();
 
   while (playerWins !== 5 && computerWins !== 5) {
     let board = initializeBoard();
+    let currentPlayer = firstPlayer;
 
     while (true) {
-      if (first === 'player') {
-        displayBoard(board, playerWins, computerWins);
-
-        playerChoosesSquare(board);
-        if (someoneWon(board) || boardFull(board)) break;
-
-        computerChoosesSquare(board);
-        if (someoneWon(board) || boardFull(board)) break;
-      } else {
-        computerChoosesSquare(board);
-        if (someoneWon(board) || boardFull(board)) break;
-
-        displayBoard(board, playerWins, computerWins);
-
-        playerChoosesSquare(board);
-        if (someoneWon(board) || boardFull(board)) break;
-      }
+      displayBoard(board, playerWins, computerWins);
+      chooseSquare(board, currentPlayer);
+      currentPlayer = alternatePlayer(currentPlayer);
+      if (someoneWon(board) || boardFull(board)) break;
     }
 
     displayBoard(board);
@@ -258,8 +258,15 @@ while (true) {
   }
 
   prompt('Play again? (y/n)');
-  let answer = readline.question().toLowerCase()[0];
-  if (answer !== 'y') break;
+  let answer;
+  let acceptableAnswer = ['y', 'n', 'Y', 'N'];
+  while (true) {
+    answer = readline.question()[0];
+    if (acceptableAnswer.includes(answer)) break;
+    prompt('Please choose an appropriate option! (y/n)');
+  }
+
+  if (answer.toLowerCase()[0] === 'n') break;
 }
 
 prompt('Thanks  for playing Tic Tac Toe!');
