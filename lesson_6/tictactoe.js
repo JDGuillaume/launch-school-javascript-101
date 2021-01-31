@@ -9,6 +9,27 @@ function prompt(message) {
   return console.log(`=> ${message}`);
 }
 
+function joinOr(array = [], delimiter = ', ', conjunction = 'or') {
+  let arrayString = array.join(delimiter);
+  conjunction = ' ' + conjunction + ' ';
+
+  if (array.length === 2) {
+    return array.join(conjunction);
+  }
+
+  if (array.length > 2) {
+    let lastDelimiterIndex = arrayString.lastIndexOf(delimiter);
+
+    return (
+      arrayString.slice(0, lastDelimiterIndex + 1) +
+      conjunction +
+      arrayString.slice(-1)
+    );
+  }
+
+  return arrayString;
+}
+
 function displayBoard(board) {
   console.clear();
 
@@ -47,7 +68,7 @@ function playerChoosesSquare(board) {
   let square;
 
   while (true) {
-    prompt(`Choose a square (${emptySquares(board).join(', ')})`);
+    prompt(`Choose a square (${joinOr(emptySquares(board))})`);
     square = readline.question().trim();
 
     if (emptySquares(board).includes(square)) break;
