@@ -88,17 +88,15 @@ function calculateScore(hand) {
   return score;
 }
 
-function busted(hand) {
-  let score = calculateScore(hand);
-
-  if (score > POINTS_TO_WIN) {
+function busted(handScore) {
+  if (handScore > POINTS_TO_WIN) {
     return true;
   } else {
     return false;
   }
 }
 
-function playerTurn(deck, playerHand, dealerHand) {
+function playerTurn(deck, playerHand, dealerHand, playerScore) {
   while (true) {
     let choice;
 
@@ -112,31 +110,33 @@ function playerTurn(deck, playerHand, dealerHand) {
 
     if (choice[0] === 'h') {
       dealCard(deck, playerHand);
+      playerScore = calculateScore(playerHand);
 
-      if (busted(playerHand)) break;
+      if (busted(playerScore)) return playerScore;
     }
 
     if (choice[0] === 's') {
       prompt(`You chose to stay!\n`);
-      break;
+      return playerScore;
     }
   }
 }
 
-function dealerTurn(deck, dealerHand) {
-  while (calculateScore(dealerHand) <= 17 && !busted(dealerHand)) {
+function dealerTurn(deck, dealerHand, dealerScore) {
+  while (calculateScore(dealerHand) < 17 && !busted(dealerHand)) {
     dealCard(deck, dealerHand);
   }
+  dealerScore = calculateScore(dealerHand);
+  return dealerScore;
 }
 
-function detectWinner(playerHand, dealerHand) {
-  const playerScore = calculateScore(playerHand);
-  const dealerScore = calculateScore(dealerHand);
-
+function detectWinner(playerScore, dealerScore) {
   if (playerScore === 21 || playerScore > dealerScore) {
     prompt(`Player Wins! (${playerScore})`);
-  } else {
+  } else if (dealerScore === 21 || dealerScore > playerScore) {
     prompt(`Dealer Wins! (${dealerScore})`);
+  } else {
+    prompt(`It's a tie!`);
   }
 }
 
@@ -144,25 +144,26 @@ while (true) {
   const deck = initializeDeck();
   const playerHand = [];
   const dealerHand = [];
+  let playerScore = 0;
+  let dealerScore = 0;
 
   firstDeal(deck, playerHand, dealerHand);
+  playerScore = playerTurn(deck, playerHand, dealerHand, playerScore);
 
-  playerTurn(deck, playerHand, dealerHand);
-  if (busted(playerHand)) {
-    prompt(`You busted! (${calculateScore(playerHand)})`);
+  if (busted(playerScore)) {
+    prompt(`You busted! (${playerScore})`);
     prompt(`The Dealer wins! (${calculateScore(dealerHand)})`);
     break;
   }
 
-  dealerTurn(deck, dealerHand);
-
-  if (busted(dealerHand)) {
-    prompt(`The Dealer busted! (${calculateScore(dealerHand)})`);
-    prompt(`The Player wins! (${calculateScore(playerHand)})`);
+  dealerScore = dealerTurn(deck, dealerHand, dealerScore);
+  if (busted(dealerScore)) {
+    prompt(`The Dealer busted! (${dealerScore})`);
+    prompt(`The Player wins! (${playerScore})`);
     break;
   }
 
-  detectWinner(playerHand, dealerHand);
+  detectWinner(playerScore, dealerScore);
 
   break;
 }
