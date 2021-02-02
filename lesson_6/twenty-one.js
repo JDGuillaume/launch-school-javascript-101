@@ -66,6 +66,17 @@ function printHands(playerHand, dealerHand, playerWins, dealerWins) {
   console.log('------------------------------------');
 }
 
+function hitOrStay() {
+  let choice;
+  prompt(`Would you like to hit or stay? (hit/stay)`);
+  while (true) {
+    choice = readline.question().toLowerCase();
+    if (choice[0] === 'h' || choice[0] === 's') break;
+    prompt('Please choose an appropriate option! (h)it/(s)tay.');
+  }
+  return choice;
+}
+
 function calculateScore(hand) {
   let score = 0;
   let aceCount = 0;
@@ -92,11 +103,7 @@ function calculateScore(hand) {
 }
 
 function busted(handScore) {
-  if (handScore > POINTS_TO_WIN) {
-    return true;
-  } else {
-    return false;
-  }
+  return handScore > POINTS_TO_WIN;
 }
 
 // eslint-disable-next-line max-statements
@@ -109,25 +116,17 @@ function playerTurn(
   dealerWins
 ) {
   while (true) {
-    let choice;
-
     printHands(playerHand, dealerHand, playerWins, dealerWins);
 
-    prompt(`Would you like to hit or stay? (hit/stay)`);
-    while (true) {
-      choice = readline.question().toLowerCase();
-      if (choice[0] === 'h' || choice[0] === 's') break;
-      prompt('Please choose an appropriate option! (h)it/(s)tay.');
-    }
+    let choice = hitOrStay();
 
     if (choice[0] === 'h') {
       dealCard(deck, playerHand);
+      console.clear();
       playerScore = calculateScore(playerHand);
 
       if (busted(playerScore)) return playerScore;
-    }
-
-    if (choice[0] === 's') {
+    } else {
       prompt(`You chose to stay!\n`);
       playerScore = calculateScore(playerHand);
       return playerScore;
@@ -144,15 +143,22 @@ function dealerTurn(deck, dealerHand, dealerScore) {
 }
 
 function detectWinner(playerScore, dealerScore) {
-  if (playerScore === 21 || playerScore > dealerScore) {
-    prompt(`Player Wins! (${playerScore}).\n`);
+  if (playerScore === POINTS_TO_WIN || playerScore > dealerScore) {
     return 'player';
-  } else if (dealerScore === 21 || dealerScore > playerScore) {
-    prompt(`Dealer Wins! (${dealerScore}).\n`);
+  } else if (dealerScore === POINTS_TO_WIN || dealerScore > playerScore) {
     return 'dealer';
   } else {
-    prompt(`It's a tie!`);
     return 'tie';
+  }
+}
+
+function displayWinner(winner, playerScore, dealerScore) {
+  if (winner === 'player') {
+    prompt(`Player Wins! (${playerScore}).\n`);
+  } else if (winner === 'dealer') {
+    prompt(`Dealer Wins! (${dealerScore}).\n`);
+  } else {
+    prompt(`It's a tie!`);
   }
 }
 
@@ -160,7 +166,10 @@ while (true) {
   let playerWins = 0;
   let dealerWins = 0;
 
+  console.clear();
   prompt('Welcome to Twenty-One!');
+  prompt('The player closest to 21 without going over wins!');
+  prompt(`You'll be playing best of ${GAMES_TO_WIN}.`);
 
   while (playerWins !== GAMES_TO_WIN && dealerWins !== GAMES_TO_WIN) {
     const deck = initializeDeck();
@@ -180,6 +189,7 @@ while (true) {
     );
 
     if (busted(playerScore)) {
+      console.clear();
       prompt(`You busted! (${playerScore}).`);
       prompt(`The Dealer wins! (${calculateScore(dealerHand)}).\n`);
       dealerWins++;
@@ -188,13 +198,16 @@ while (true) {
 
     dealerScore = dealerTurn(deck, dealerHand, dealerScore);
     if (busted(dealerScore)) {
+      console.clear();
       prompt(`The Dealer busted! (${dealerScore}).`);
       prompt(`The Player wins! (${playerScore}).\n`);
       playerWins++;
       continue;
     }
 
+    console.clear();
     const winner = detectWinner(playerScore, dealerScore);
+    displayWinner(winner, playerScore, dealerScore);
 
     switch (winner) {
       case 'player':
